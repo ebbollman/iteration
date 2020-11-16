@@ -65,11 +65,11 @@ x_vec = rnorm(30, mean = 5, sd = 3)
 (x_vec - mean(x_vec)) / sd(x_vec)
 ```
 
-    ##  [1] -0.2213860 -0.4614013  0.4156098 -0.3397409 -0.5945482 -0.7376940
-    ##  [7] -0.1162921  0.2663349  0.8233934  1.8737453 -1.2463149 -0.4396310
-    ## [13]  1.1600046  0.8858743 -1.1244633  0.8326700  0.8512588  0.8107255
-    ## [19]  0.3053639  2.2850299  0.5851994 -0.6682342  0.8137821 -1.9244432
-    ## [25] -0.4087162  0.4444717 -1.5688368 -1.4626893 -0.7290533 -0.3100189
+    ##  [1]  0.6426001  0.6398961 -0.1880981 -1.4379481  0.6375554 -1.3665341
+    ##  [7] -0.1386112  1.3585557  1.6669875  0.4736211  0.4564066 -0.1332025
+    ## [13]  0.1015292 -1.1387137 -0.2192703  0.1490290 -2.1523565 -0.7270045
+    ## [19]  1.9775640  0.6830790  1.4172915 -1.0459551 -0.3113223 -0.4863328
+    ## [25]  0.5573051 -1.0579080 -1.5144784  0.2652405  0.7317118  0.1593630
 
 Want function to compute z-scores
 
@@ -90,11 +90,11 @@ z_scores = function(x) {
 z_scores(x_vec)
 ```
 
-    ##  [1] -0.2213860 -0.4614013  0.4156098 -0.3397409 -0.5945482 -0.7376940
-    ##  [7] -0.1162921  0.2663349  0.8233934  1.8737453 -1.2463149 -0.4396310
-    ## [13]  1.1600046  0.8858743 -1.1244633  0.8326700  0.8512588  0.8107255
-    ## [19]  0.3053639  2.2850299  0.5851994 -0.6682342  0.8137821 -1.9244432
-    ## [25] -0.4087162  0.4444717 -1.5688368 -1.4626893 -0.7290533 -0.3100189
+    ##  [1]  0.6426001  0.6398961 -0.1880981 -1.4379481  0.6375554 -1.3665341
+    ##  [7] -0.1386112  1.3585557  1.6669875  0.4736211  0.4564066 -0.1332025
+    ## [13]  0.1015292 -1.1387137 -0.2192703  0.1490290 -2.1523565 -0.7270045
+    ## [19]  1.9775640  0.6830790  1.4172915 -1.0459551 -0.3113223 -0.4863328
+    ## [25]  0.5573051 -1.0579080 -1.5144784  0.2652405  0.7317118  0.1593630
 
 Input = x\_vec function operates on x
 
@@ -157,7 +157,7 @@ mean_and_sd(x_vec)
     ## # A tibble: 1 x 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  4.43  2.64
+    ## 1  4.46  2.91
 
 ``` r
 x_vec = rnorm(100, mean = 3, sd = 4)
@@ -167,7 +167,7 @@ mean_and_sd(x_vec)
     ## # A tibble: 1 x 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  3.07  3.60
+    ## 1  3.10  4.32
 
 ## Multiple inputs
 
@@ -189,7 +189,7 @@ sim_data %>%
     ## # A tibble: 1 x 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  3.78  2.64
+    ## 1  3.86  2.95
 
 ``` r
 sim_mean_sd = function(samp_size, mu = 3, sigma = 4) {
@@ -212,7 +212,7 @@ sim_mean_sd(100, 6, 3)
     ## # A tibble: 1 x 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  5.68  2.76
+    ## 1  6.11  3.16
 
 ``` r
 sim_mean_sd(samp_size = 100, mu = 6, sigma = 3)
@@ -221,7 +221,7 @@ sim_mean_sd(samp_size = 100, mu = 6, sigma = 3)
     ## # A tibble: 1 x 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  5.88  2.96
+    ## 1  6.67  3.17
 
 ``` r
 sim_mean_sd(samp_size = 100)
@@ -230,7 +230,7 @@ sim_mean_sd(samp_size = 100)
     ## # A tibble: 1 x 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  3.57  4.42
+    ## 1  3.25  3.46
 
 Named matching versus positional matching.
 
@@ -308,8 +308,19 @@ dynamite_url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_
 read_page_reviews(dynamite_url)
 ```
 
-    ## # A tibble: 0 x 3
-    ## # … with 3 variables: title <chr>, stars <dbl>, text <chr>
+    ## # A tibble: 10 x 3
+    ##    title                               stars text                               
+    ##    <chr>                               <dbl> <chr>                              
+    ##  1 Boo                                     1 "We rented this movie because our …
+    ##  2 Movie is still silly fun....amazon…     1 "We are getting really frustrated …
+    ##  3 Brilliant and awkwardly funny.          5 "I've watched this movie repeatedl…
+    ##  4 Great purchase price for great mov…     5 "Great movie and real good digital…
+    ##  5 Movie for memories                      5 "I've been looking for this movie …
+    ##  6 Love!                                   5 "Love this movie. Great quality"   
+    ##  7 Hilarious!                              5 "Such a funny movie, definitely br…
+    ##  8 napoleon dynamite                       5 "cool movie"                       
+    ##  9 Top 5                                   5 "Best MOVIE ever! Funny one liners…
+    ## 10 👍                                      5 "Exactly as described and came on …
 
 ``` r
 dynamite_url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
@@ -324,4 +335,53 @@ all_reviews =
     read_page_reviews(dynamite_urls[4]),
     read_page_reviews(dynamite_urls[5]),
   )
+
+all_reviews
 ```
+
+    ## # A tibble: 10 x 3
+    ##    title                     stars text                                         
+    ##    <chr>                     <dbl> <chr>                                        
+    ##  1 A top favorite movie !!       5 "Love this movie, needed to add it to my col…
+    ##  2 Best.Movie!                   5 "I enjoyed showing my children this \"classi…
+    ##  3 Great Movie                   5 "I love this movie. Showed it to my middle s…
+    ##  4 Tina, you fat lard, come…     5 "A very quotable, awkard and hilarious movie…
+    ##  5 Funny!                        4 "It is a great movie although it’s a little …
+    ##  6 Excellent for families        5 "Highly recommend for family entertainment"  
+    ##  7 Hilarious!                    5 "Hilarious!"                                 
+    ##  8 Excellent in all fronts.      5 "Excellent in all fronts."                   
+    ##  9 good                          5 "good"                                       
+    ## 10 Buy                           5 "Very good movie not very expensive"
+
+## Functions as arguments
+
+``` r
+my_summary = function(x, summ_func) {
+  
+  summ_func(x)
+  
+}
+
+x_vec = rnorm(100, 3, 7)
+mean(x_vec)
+```
+
+    ## [1] 2.814209
+
+``` r
+median(x_vec)
+```
+
+    ## [1] 2.322501
+
+``` r
+my_summary(x_vec, sd)
+```
+
+    ## [1] 7.097542
+
+``` r
+my_summary(x_vec, IQR)
+```
+
+    ## [1] 9.48047
