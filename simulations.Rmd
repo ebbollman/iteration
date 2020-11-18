@@ -1,5 +1,5 @@
 ---
-title: "Iteration and listcols"
+title: "Simulations"
 author: E. Brennan Bollman
 date: '`r format(Sys.time(), "%y-%m-%d")`'
 output: github_document
@@ -26,189 +26,75 @@ scale_colour_discrete = scale_colour_viridis_d()
 scale_fill_discrete = scale_fill_viridis_d()
 ```
 
-## Lists
+## Sample simulation
 
-Can put anything in list
-
-```{r}
-l = list(
-  vec_numeric = 5:8,
-  vec_logical = c(TRUE, TRUE, FALSE, TRUE, FALSE, FALSE),
-  mat = matrix(1:8, nrow = 2, ncol = 4),
-  summary = summary(rnorm(100))
-)
-
-l
-l$vec_numeric
-l[[1]]
-l[["vec_numeric"]]
-mean(l[["vec_numeric"]])
-```
-
-
-## `for` loop
-
-Create a new list
+Function
 
 ```{r}
-list_norm = 
-  list(
-    a = rnorm(20, mean = 3, sd = 1),
-    b = rnorm(30, mean = 0, sd = 5),
-    c = rnorm(40, mean = 10, sd = 0.2),
-    d = rnorm(20, mean = -3, sd = 1)
-  )
-
-list_norm
-```
-
-Pause and get my old function
-
-```{r}
-mean_and_sd = function(x) {
-  if (!is.numeric(x)) {
-    stop("Input must be numeric")
-  }
+sim_mean_sd = function(samp_size, mu = 3, sigma = 4) {
   
-  if (length(x) < 3) {
-    stop("Input must have at least three numbers")
-  }
-  
-  mean_x = mean(x)
-  sd_x = sd(x)
-  
-  tibble(
-    mean = mean_x,
-    sd = sd_x
-  )
+  sim_data = 
+    tibble(
+    x = rnorm(n = samp_size, mean = mu, sd = sigma)
+    )
+
+  sim_data %>% 
+    summarize(
+      mean = mean(x),
+      sd = sd(x)
+    )
 }
 ```
 
+Simulate by running this line
+
 ```{r}
-mean_and_sd(list_norm[[1]])
-mean_and_sd(list_norm[[2]])
-mean_and_sd(list_norm[[3]])
-mean_and_sd(list_norm[[4]])
+sim_mean_sd(30)
 ```
 
-Let's use a for loop
+## Let's simulate a lot
+
+Start with a `for` loop.
 
 ```{r}
-output = vector("list", length = 4)
+output = vector("list", length = 100)
 
-for (i in 1:4) {
+for (i in 1:100) {
   
-  output[[i]] = mean_and_sd(list_norm[[i]])
+  output[[i]] = sim_mean_sd(samp_size = 30)
   
 }
 
-output
+bind_rows(output)
+
 ```
 
-## Let's try purr::map
+This Above doesn't have input list, just has output list.
+Can use map to apply input list to a function for output list
+
+Let's use a loop function.
 
 ```{r}
-output = map(list_norm, mean_and_sd)
+sim_results = 
+  rerun(100, sim_mean_sd(samp_size = 30)) %>% 
+  bind_rows()
 ```
 
-what if you want a different function?
+Can set the `set.seed` to make sure the random sample is same each time?
+
+Let's look at results
 
 ```{r}
-output = map(list_norm, median)
-output = map(list_norm, IQR)
-```
+sim_results %>% 
+  ggplot(aes(x = mean)) + geom_density()
 
-## Variants on map
-
-```{r}
-output = map_dbl(list_norm, median)
-```
-
-```{r}
-output = map_df(list_norm, mean_and_sd, .id = "input")
-```
-
-## List col
-
-Want something that keeps track of input and output at same time.
-
-First, create df that has listcolumn
-
-```{r}
-listcol_df = 
-  tibble(
-    name = c("a", "b", "c", "d"),
-    samp = list_norm
-  )
-```
-
-```{r}
-listcol_df %>% 
-  pull(samp)
-
-listcol_df %>% 
-  pull(name)
-
-listcol_df %>% 
-  filter(name == "a")
-```
-
-Try operations
-
-```{r}
-listcol_df$samp[[1]]
-
-mean_and_sd(listcol_df$samp[[1]])
-mean_and_sd(listcol_df$samp[[2]])
-```
-
-Can I just map to iterate the function through?
-
-```{r}
-map(listcol_df$samp, mean_and_sd)
-```
-
-listcol is in df, but still map across an element of this list
-
-## Want to apply map function to each element of listcol and save output in my df
-
-Can I add a list column?
-
-```{r}
-listcol_df %>% 
-  mutate(
-    summary = map(samp, mean_and_sd)
+sim_results %>% 
+  summarize(
+    avg_samp_mean = mean(mean),
+    sd_samp_mean = sd(mean)
   )
 
-listcol_df %>% 
-  mutate(
-    summary = map_df(samp, mean_and_sd)
-  )
-
-listcol_df %>% 
-  mutate(
-    summary = map(samp, mean_and_sd),
-    medians = map_dbl(samp, median)
-  )
-```
-
-## Weather Data
-
-```{r}
-weather_df = 
-  rnoaa::meteo_pull_monitors(
-    c("USW00094728", "USC00519397", "USS0023B17S"),
-    var = c("PRCP", "TMIN", "TMAX"), 
-    date_min = "2017-01-01",
-    date_max = "2017-12-31") %>%
-  mutate(
-    name = recode(
-      id, 
-      USW00094728 = "CentralPark_NY", 
-      USC00519397 = "Waikiki_HA",
-      USS0023B17S = "Waterhole_WA"),
-    tmin = tmin / 10,
-    tmax = tmax / 10) %>%
-  select(name, id, everything())
+sim_results %>% 
+  ggplot(aes(x = sd)) + geom_density()
 ```
 
