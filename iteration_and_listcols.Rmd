@@ -128,4 +128,67 @@ output = map_dbl(list_norm, median)
 output = map_df(list_norm, mean_and_sd, .id = "input")
 ```
 
+## List col
+
+Want something that keeps track of input and output at same time.
+
+First, create df that has listcolumn
+
+```{r}
+listcol_df = 
+  tibble(
+    name = c("a", "b", "c", "d"),
+    samp = list_norm
+  )
+```
+
+```{r}
+listcol_df %>% 
+  pull(samp)
+
+listcol_df %>% 
+  pull(name)
+
+listcol_df %>% 
+  filter(name == "a")
+```
+
+Try operations
+
+```{r}
+listcol_df$samp[[1]]
+
+mean_and_sd(listcol_df$samp[[1]])
+mean_and_sd(listcol_df$samp[[2]])
+```
+
+Can I just map to iterate the function through?
+
+```{r}
+map(listcol_df$samp, mean_and_sd)
+```
+
+listcol is in df, but still map across an element of this list
+
+## Want to apply map function to each element of listcol and save output in my df
+
+Can I add a list column?
+
+```{r}
+listcol_df %>% 
+  mutate(
+    summary = map(samp, mean_and_sd)
+  )
+
+listcol_df %>% 
+  mutate(
+    summary = map_df(samp, mean_and_sd)
+  )
+
+listcol_df %>% 
+  mutate(
+    summary = map(samp, mean_and_sd),
+    medians = map_dbl(samp, median)
+  )
+```
 
